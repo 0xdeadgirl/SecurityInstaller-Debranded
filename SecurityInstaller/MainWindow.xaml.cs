@@ -152,7 +152,13 @@ namespace SecurityInstaller {
 
             if (uBlock.IsChecked == true) {
                 tasks.Add(Tools.InstallUB());
-                resultsProgress.Report("\nUBlock Origin added to Edge and Chrome");
+                resultsProgress.Report("\nuBlock Origin Lite added to Edge and Chrome");
+                ProgressBar2.Value += 1;
+            }
+
+            if (uBlock_FF.IsChecked == true) {
+                tasks.Add(Tools.InstallUB_Firefox());
+                resultsProgress.Report("\nuBlock Origin added to Firefox");
                 ProgressBar2.Value += 1;
             }
 

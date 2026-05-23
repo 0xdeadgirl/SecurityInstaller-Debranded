@@ -269,7 +269,7 @@ public static class ComputerInfo {
         using(RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion")) {
             try {
                 if(key != null)
-                    return key.GetValue("DisplayVersionz").ToString() ?? "N/A";
+                    return key.GetValue("DisplayVersion").ToString() ?? "N/A";
             } catch(Exception e) {
                 System.Diagnostics.Debug.WriteLine(e.Message);
             }

@@ -1,10 +1,15 @@
 ﻿using IWshRuntimeLibrary;
 using Microsoft.Win32;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Management;
+using System.Net.Http;
+using System.Security;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Resources;
@@ -184,4 +189,125 @@ public class Tools
 
         return true;
     }
+
+    /**
+     * Installs uBlock Origin for all profiles in Firefox
+     * 
+     * For the Chrome/Edge version of this function, we just write to the registry and Chrome/Edge
+     * will install the extension on next launch, but for Firefox we need to download it ourselves
+     * and modify the distribution policies.
+     * 
+     * @author Lukas Lynch
+     */
+    public static async Task<bool> InstallUB_Firefox() {
+        const string extensionID = "uBlock0@raymondhill.net";
+        const string url = "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi";
+
+        // Firefox directory in AppData: %AppData%\Mozilla\Firefox\
+        string rootDir = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "Mozilla","Firefox"
+        );
+
+        // 1.) Fetching data that we'll output into an XPI file(s)
+        byte[] xpiData;
+        try {
+            xpiData = await (new HttpClient()).GetByteArrayAsync(url);
+        } catch(HttpRequestException err) {
+            Debug.WriteLine($"InstallUB_Firefox/Download: Failed to download uBlock xpi: {err.Message}");
+            return false;
+        }
+
+        // 2.) Locate each profile directory and install uBO for all of them
+        foreach(string profileDir in GetProfileDirs())
+            InstallToProfile(profileDir, xpiData);
+
+        // 3.) Update Firefox's distribution policies
+        UpdateDistPolicies();
+
+        /* -- Supporting functions -- */
+
+        /**
+         * Returns iterable list of paths to all profiles listed in profiles.ini
+         */
+        IEnumerable<string> GetProfileDirs() {
+            if(!System.IO.Directory.Exists(rootDir)) {
+                Debug.WriteLine($"InstallUB_Firefox/GetProfileDirs: Firefox profiles root not found: {rootDir}");
+                yield return null;
+            }
+
+            string iniPath = Path.Combine(rootDir,"profiles.ini");
+            if(!System.IO.File.Exists(iniPath)) {
+                Debug.WriteLine($"InstallUB_Firefox/GetProfileDirs: profiles.ini not found: {iniPath}");
+                yield return null;
+            }
+
+            foreach(string line in System.IO.File.ReadAllLines(iniPath)) {
+                if(!line.StartsWith("Path=", StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                string rawPath = line.Substring("Path=".Length).Trim().Replace('/', '\\');
+                bool isAbsolute = Path.IsPathRooted(rawPath);
+
+                // If the file path contains a drive letter, then we don't need to combine with the Firefox root dir
+                string fullPath = isAbsolute ? rawPath : Path.Combine(rootDir, rawPath);
+                if(Directory.Exists(fullPath))
+                    yield return fullPath;
+            }
+        } // GetProfileDirs()
+
+        /*
+         * For each profile passed, we write the fetched xpiData into profileDir\extensions\uBlock0@raymondhill.net.xpi
+         */
+        void InstallToProfile(string profileDir, byte[] xpiBytes) {
+            if(profileDir == null)
+                return;
+
+            string extensionsDir = Path.Combine(profileDir, "extensions");
+            Directory.CreateDirectory(extensionsDir);
+
+            string dest = Path.Combine(extensionsDir, $"{extensionID}.xpi");
+            System.IO.File.WriteAllBytes(dest, xpiBytes);
+        } // InstallToProfile
+
+
+        /*
+         * Updating rootDir\distribution\policies.json so Firefox will act as though uBO was installed
+         * by an IT admin or something. tbh I'm not sure why we need to do this lol
+         */
+        void UpdateDistPolicies() {
+            string distDir = Path.Combine(rootDir, "distribution");
+            string policyPath = Path.Combine(distDir, "policies.json");
+            Directory.CreateDirectory(distDir);
+
+            // If the file already exists we'll parse the pre-existing JSON, or we'll create a new JSON object
+            JObject root = System.IO.File.Exists(policyPath)
+                ? JObject.Parse(System.IO.File.ReadAllText(policyPath))
+                : new JObject();
+
+            /*
+             * "policies" {
+             *      "ExtensionSettings": {
+             *          "uBlock0@raymondhill.net": {
+             *              "installation_mode" = "force_installed",
+             *              "installation_url" = `url`
+             *          }
+             *      }
+             *  }
+             */
+            JObject policies = root["policies"] as JObject ?? new JObject();
+            JObject extensionSettings = policies["ExtensionSettings"] as JObject ?? new JObject();
+            extensionSettings[extensionID] = new JObject {
+                ["installation_mode"] = "force_installed",
+                ["install_url"] = url
+            };
+
+            policies["ExtensionSettings"] = extensionSettings;
+            root["policies"] = policies;
+
+            System.IO.File.WriteAllText(policyPath, root.ToString(Formatting.Indented));
+        } // UpdateDistPolicies
+
+        return true;
+    } // InstallUB_Firefox
 }

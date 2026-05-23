@@ -401,6 +401,11 @@
                                           Foreground="#E8E9ED"
                                           Margin="20,5,0,5"
                                           FontWeight="SemiBold" />
+                                <CheckBox x:Name="uBlock_FF"
+                                          Content="Install uBlock Origin in Firefox"
+                                          Foreground="#E8E9ED"
+                                          Margin="20,5,0,5"
+                                          FontWeight="SemiBold" />
                                 <CheckBox x:Name="bloatkiller"
                                           Content="Disable unnecessary services"
                                           Foreground="#E8E9ED"

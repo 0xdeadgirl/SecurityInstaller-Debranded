@@ -4,12 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [ToDo]
-- Install uBO in Firefox
 - Uninstall old version(s) of MBAM before attempting to reinstall/update
 - Get/display the top MAC address returned by ipconfig
 - [optional] Create de-branded fork
 
 ## [Unreleased]
+## [3.0.5] - 05-22-2026
+### Added
+- Install uBlock Origin in Firefox
+### Fixed
+- Fixed a typo for getting the Windows display version in ComputerInfo.cs - s/DisplayVersionz/DisplayVersions/
+
 ## [3.0.4] - 01-22-2026
 ### Added
 - "New" Calling Card channel IDs to check for when making Calling Card shortcuts in NOC folder
