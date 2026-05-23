@@ -4,8 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [ToDo]
-- Uninstall old version(s) of MBAM before attempting to reinstall/update
-- Get/display the top MAC address returned by ipconfig
+- MSI queue (need more info)
 - [optional] Create de-branded fork
 
 ## [Unreleased]
