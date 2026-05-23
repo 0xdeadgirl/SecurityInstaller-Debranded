@@ -81,8 +81,8 @@ public static class Installers {
                 startInfo = new ProcessStartInfo {
                     FileName = path
                 };
-            (new Process { StartInfo = startInfo }).Start();
 
+            Process.Start(startInfo);
             results.Report($"Launched: {Path.GetFileName(path)}");
 
             return true;
