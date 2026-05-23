@@ -5,6 +5,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms.VisualStyles;
 using System.Windows.Media;
 
 /**
@@ -45,7 +46,7 @@ public static class Installers {
                 check_for_exec(file);
 
         void check_for_exec(string file) {
-            if(file.EndsWith(".exe") || file.EndsWith(".msi")) {
+            if(file.EndsWith(".exe") || file.EndsWith(".msi") || file.EndsWith(".bat") || file.EndsWith("ps1")) {
                 // This is the actual CheckBox XAML element
                 CheckBox installerCB = new CheckBox {
                     Content = Path.GetFileNameWithoutExtension(file),
@@ -66,11 +67,22 @@ public static class Installers {
 
     /**
      * This just spawns a new process and attempts to run whatever path is passed to it.
+     * If you pass a PS script, it will invoke PS on it.
      */
     public static async Task<bool> RunInstaller(string path, IProgress<string> results) {
         try {
-            Process process = new Process { StartInfo = new ProcessStartInfo { FileName = path } };
-            process.Start();
+            ProcessStartInfo startInfo;
+            if(path.EndsWith(".ps1"))
+                startInfo = new ProcessStartInfo {
+                    FileName = "powershell.exe",
+                    Arguments = $"-NoProfile -ExecutionPolicy Bypass -File {path}"
+                };
+            else
+                startInfo = new ProcessStartInfo {
+                    FileName = path
+                };
+            (new Process { StartInfo = startInfo }).Start();
+
             results.Report($"Launched: {Path.GetFileName(path)}");
 
             return true;

@@ -9,6 +9,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - [optional] Create de-branded fork
 
 ## [Unreleased]
+## [3.0.6] - 05-23-2026
+### Added
+- Functionality to invoke PowerShell scripts from "Misc. Installers"
+### Changed
+- Updated .NET version (4.7.2 -> 4.8)
+- Updated some packages
+- Updated license year
+
 ## [3.0.5] - 05-22-2026
 ### Added
 - Install uBlock Origin in Firefox
