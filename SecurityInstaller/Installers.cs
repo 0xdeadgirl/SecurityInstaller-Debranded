@@ -35,8 +35,8 @@ public static class Installers {
      * it creates a checkbox in the 'Misc. Installers' tab.
      */
     public static void FindMiscInstallers(StackPanel parent) {
-        string installersFolder = Path.Combine(Directory.GetCurrentDirectory(),"installers");
-        string niniteFolder = Path.Combine(Directory.GetCurrentDirectory(),"ninite");
+        string installersFolder = Path.Combine(Directory.GetCurrentDirectory(), "installers");
+        string niniteFolder = Path.Combine(Directory.GetCurrentDirectory(), "ninite");
 
         if(Directory.Exists(installersFolder))
             foreach(string file in Directory.EnumerateFiles(installersFolder))
@@ -46,7 +46,7 @@ public static class Installers {
                 check_for_exec(file);
 
         void check_for_exec(string file) {
-            if(file.EndsWith(".exe") || file.EndsWith(".msi") || file.EndsWith(".bat") || file.EndsWith("ps1")) {
+            if(file.EndsWith(".exe") || file.EndsWith(".msi") || file.EndsWith(".bat") || file.EndsWith(".ps1")) {
                 // This is the actual CheckBox XAML element
                 CheckBox installerCB = new CheckBox {
                     Content = Path.GetFileNameWithoutExtension(file),
@@ -75,7 +75,10 @@ public static class Installers {
             if(path.EndsWith(".ps1"))
                 startInfo = new ProcessStartInfo {
                     FileName = "powershell.exe",
-                    Arguments = $"-NoProfile -ExecutionPolicy Bypass -File {path}"
+                    Arguments = "-NoProfile " +
+                                "-ExecutionPolicy Bypass " +
+                               $"-File \"{path}\"",
+                    UseShellExecute = true
                 };
             else
                 startInfo = new ProcessStartInfo {

@@ -1,16 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.7.34018.315
+# Visual Studio Version 18
+VisualStudioVersion = 18.6.11819.183 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecurityInstaller", "SecurityInstaller\SecurityInstaller.csproj", "{F90C44FC-DCAC-4F23-82F3-65EC9E68F864}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug with spaces|Any CPU = Debug with spaces|Any CPU
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F90C44FC-DCAC-4F23-82F3-65EC9E68F864}.Debug with spaces|Any CPU.ActiveCfg = Release|Any CPU
+		{F90C44FC-DCAC-4F23-82F3-65EC9E68F864}.Debug with spaces|Any CPU.Build.0 = Release|Any CPU
 		{F90C44FC-DCAC-4F23-82F3-65EC9E68F864}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F90C44FC-DCAC-4F23-82F3-65EC9E68F864}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F90C44FC-DCAC-4F23-82F3-65EC9E68F864}.Release|Any CPU.ActiveCfg = Release|Any CPU
