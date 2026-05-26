@@ -5,7 +5,6 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [ToDo]
 - MSI queue (need more info)
-- [optional] Create de-branded fork
 
 ## [Unreleased]
 ## [3.0.6] - 05-23-2026

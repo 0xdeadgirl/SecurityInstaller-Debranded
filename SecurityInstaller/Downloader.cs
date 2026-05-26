@@ -36,11 +36,6 @@ public static class Downloader {
                 string rez = await Task.Run(() => Install(tool.ToolName, tool.ToolCliSwitch, results));
 
                 results.Report($"{tool.ToolName} install {rez}\nElapsed Time: {watch.ElapsedMilliseconds}ms");
-            } else if (tool.ToolName == "Remote.msi" && !run) {
-                await Task.Run(() => Process.Start(tool.ToolLocation, tool.ToolCliSwitch));
-                Tools.MakeSupportShortcut();
-
-                results.Report($"\n{tool.ToolName} opened in: {watch.ElapsedMilliseconds}ms");
             } else if (tool.ToolName == "ADWCleaner.exe") {
                 Directory.CreateDirectory(@"C:\AdwCleaner");
                 File.Copy(
@@ -55,24 +50,17 @@ public static class Downloader {
         {
             try
             {
-                if (tool.ToolName == "ADWCleaner.exe" || tool.ToolName == "Remote.msi" || tool.ToolName == "bloatkiller.bat")
-                {
+                if (tool.ToolName == "ADWCleaner.exe" || tool.ToolName == "bloatkiller.bat") {
                     await Task.Run(() => Process.Start(tool.ToolLocation, tool.ToolCliSwitch));
 
-                    if (tool.ToolName == "Remote.msi")
-                        Tools.MakeSupportShortcut();
-
                     results.Report($"\n{tool.ToolName} opened in: {watch.ElapsedMilliseconds}ms");
-                }
-                else
-                {
+                } else {
                     await Task.Run(() => Process.Start(tool.ToolLocation));
 
                     results.Report($"\n{tool.ToolName} opened in: {watch.ElapsedMilliseconds}ms");
                 }
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 results.Report($"\nError Opening:\n{ex.Message}");
             }
         }

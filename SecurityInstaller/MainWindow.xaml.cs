@@ -106,17 +106,6 @@ namespace SecurityInstaller {
             // Wait for all tasks to complete
             await Task.WhenAll(tasks);
 
-            // If folder is checked make folder
-            if (noc.IsChecked == true) {
-                try {
-                    await Tools.MakeNOC(resources.Malwarebytes, resources.Macrium, resources.Glary);
-                    ScriptOutput.AppendText("\n\nNOC Folder Created");
-                    ProgressBar2.Value += 1;
-                } catch (Exception ex) {
-                    ScriptOutput.AppendText($"\n\nError making NOC Folder. Reason:\n{ex.Message}");
-                }
-            }
-
             // Cleanup
             // Delete MB shortcut from installer
             if (File.Exists(@"C:\Users\Public\Desktop\Malwarebytes.lnk"))
@@ -132,7 +121,6 @@ namespace SecurityInstaller {
 
         // Add tasks to a list
         private void AddTasks() {
-            if (remote.IsChecked == true) AddProgressTask(resources.Support);
             if (adw.IsChecked == true) AddProgressTask(resources.Adw);
             if (mb.IsChecked == true) AddProgressTask(resources.Malwarebytes);
             if (gu.IsChecked == true) AddProgressTask(resources.Glary);
@@ -296,25 +284,6 @@ namespace SecurityInstaller {
 
                 gu.IsEnabled = true;
                 gu.Opacity = 1;
-            }
-        }
-
-        private static Boolean firstLaunch = true;
-        private static Boolean percyWrenchVisible = false;
-        private void TogglePercy(object sender, RoutedEventArgs e) {
-            if(firstLaunch) {
-                firstLaunch = false;
-                return;
-            }
-
-            if (percyWrenchVisible) {
-                PercyWrench.Opacity = 0;
-                PercyClipboard.Opacity = 0.5;
-                percyWrenchVisible = false;
-            } else {
-                PercyClipboard.Opacity = 0;
-                PercyWrench.Opacity = 0.5;
-                percyWrenchVisible = true;
             }
         }
 
